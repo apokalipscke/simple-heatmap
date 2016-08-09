@@ -1,8 +1,8 @@
 <?php
 
     $host = "localhost";    // db hostname
-    $user = "user";         // db user
-    $pass = "pass";         // db password
+    $user = "root";         // db user
+    $pass = "";             // db password
     $base = "heatmap";      // db database
     /***********************/
     $data = $_POST;
@@ -18,17 +18,21 @@
         $result = mysqli_query($db, "SELECT posx, posy FROM clicks");
         $buffer = array();
         while ($row = mysqli_fetch_array($result)) {
-            $buffer[] = [$row['posx'],$row['posy']];
+            unset($row[0]);
+            unset($row[1]);
+            //print_r($row);
+            $buffer[] = $row;
 		}
+        //print_r($buffer[0]);
         echo json_encode($buffer);
     } else {
         if($result = mysqli_query($db, "INSERT INTO clicks (posx, posy, location) VALUES ('".$data['pos']['x']."','".$data['pos']['y']."','".$data['loc']."')")) {
-            echo "daten gespeichert('".$data['pos']['x']."','".$data['pos']['y']."','".$data['loc']."')";
+            echo "daten gespeichert X: ".$data['pos']['x'].", Y: ".$data['pos']['y'].", PATH: ".$data['loc']."')";
         } else {
             echo "fehler beim speichern";
         }
     }
-    
+
     mysqli_close($db);
 
 ?>
