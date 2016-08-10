@@ -1,10 +1,13 @@
 <?php
+    if(file_exists('credentials.php'))
+        include "credentials.php";
 
-    $host = "localhost";    // db hostname
-    $user = "root";         // db user
-    $pass = "";             // db password
-    $base = "heatmap";      // db database
-    /***********************/
+    /************************************************** fill with your data ***/
+    //$host = "localhost";    // db hostname
+    //$user = "user";         // db user
+    //$pass = "pass";         // db password
+    //$base = "heatmap";      // db database
+    /*************************/
     $data = $_POST;
 
     $db = mysqli_connect($host, $user, $pass, $base);
