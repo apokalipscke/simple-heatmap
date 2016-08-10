@@ -29,8 +29,10 @@
         //print_r($buffer[0]);
         echo json_encode($buffer);
     } else {
-        if($result = mysqli_query($db, "INSERT INTO clicks (posx, posy, location) VALUES ('".$data['pos']['x']."','".$data['pos']['y']."','".$data['loc']."')")) {
-            echo "daten gespeichert X: ".$data['pos']['x'].", Y: ".$data['pos']['y'].", PATH: ".$data['loc']."')";
+        if($result = mysqli_query($db, "INSERT INTO clicks (posx, posy, innerWidth, innerHeight, location)
+                                        VALUES ('".$data['pos']['x']."','".$data['pos']['y']."', '".$data['dim']['innerWidth']."', '".$data['dim']['innerHeight']."','".$data['loc']."')")) {
+
+            echo "daten gespeichert X: ".$data['pos']['x'].", Y: ".$data['pos']['y'].", W: ".$data['dim']['innerWidth'].", H: ".$data['dim']['innerHeight'].", PATH: ".$data['loc'];
         } else {
             echo "fehler beim speichern";
         }

@@ -11,15 +11,23 @@ $(document).ready(function() {
                 //y: (event.pageY - firstMargin)
                 y: event.pageY
             },
+            dim: {
+                  innerWidth: window.innerWidth,
+                 innerHeight: window.innerHeight,
+                 screenWidth: screen.width,
+                screenHeight: screen.height,
+            },
             loc: window.location.pathname
         };
 
-        //$('<div class="punkt"></div>').css('left',data.pos.x).css('top',data.pos.y).appendTo('body');
-        debug&&console.log("req post " + $.now());
-        $.post("heatmap.php", data, debug&&function(textStatus) {
-            console.log("req done " + $.now());
-            console.log(textStatus);
-        });
+        if(debug) {
+            $('<div class="punkt"></div>').css('left',data.pos.x).css('top',data.pos.y).appendTo('body');
+            console.log("req post " + $.now());
+            $.post("heatmap.php", data, function(textStatus) {
+                console.log("req done " + $.now());
+                console.log(textStatus);
+            });
+        }
     });
 });
 
