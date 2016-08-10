@@ -9,3 +9,11 @@ div.punkt {
     margin-top: -1px;
     background-color: rgba(255, 0, 255, 0.1);
 }
+
+div#drawing {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
