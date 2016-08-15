@@ -18,7 +18,7 @@
     //print_r($data);
 
     if(isset($data['getData'])) {
-        $result = mysqli_query($db, "SELECT posx, posy FROM clicks");
+        $result = mysqli_query($db, "SELECT posx, posy FROM clicks WHERE location LIKE '".$data['getData']."'");
         $buffer = array();
         while ($row = mysqli_fetch_array($result)) {
             unset($row[0]);
@@ -29,13 +29,29 @@
         //print_r($buffer[0]);
         echo json_encode($buffer);
     } else {
-        if($result = mysqli_query($db, "INSERT INTO clicks (posx, posy, innerWidth, innerHeight, location)
-                                        VALUES ('".$data['pos']['x']."','".$data['pos']['y']."', '".$data['dim']['innerWidth']."', '".$data['dim']['innerHeight']."','".$data['loc']."')")) {
+        $sw = $data['dim']['screenWidth'];
+        $sh = $data['dim']['screenHeight'];
+        $resolutions = mysqli_query($db, "SELECT * FROM screenresolutions WHERE width='".$sw."' AND height='".$sh."'");
+        if(mysqli_num_rows($resolutions) > 0) {
+            $row = mysqli_fetch_array($resolutions);
+            $screenId = $row['id'];
+            echo $screenId;
+        } else {
+            if($sr = mysqli_query($db, "INSERT INTO screenresolutions (width, height) VALUES ('".$sw."', '".$sh."')")) {
+                $screenId = mysqli_insert_id($db);
+                echo "SID: ".$screenId." ";
+            } else {
+                echo "fehler beim anlegen der screenresolution $sw $sh ";
+            }
+        }
+        if($result = mysqli_query($db, "INSERT INTO clicks (`id-screenResolution`, `posx`, `posy`, `innerWidth`, `innerHeight`, `location`)
+                                        VALUES ('".$screenId."','".$data['pos']['x']."','".$data['pos']['y']."', '".$data['dim']['innerWidth']."', '".$data['dim']['innerHeight']."','".$data['loc']."')")) {
 
-            echo "daten gespeichert X: ".$data['pos']['x'].", Y: ".$data['pos']['y'].", W: ".$data['dim']['innerWidth'].", H: ".$data['dim']['innerHeight'].", PATH: ".$data['loc'];
+            echo "daten gespeichert S: ".$screenId.", X: ".$data['pos']['x'].", Y: ".$data['pos']['y'].", W: ".$data['dim']['innerWidth'].", H: ".$data['dim']['innerHeight'].", PATH: ".$data['loc'];
         } else {
             echo "fehler beim speichern";
         }
+
     }
 
     mysqli_close($db);

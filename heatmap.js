@@ -1,9 +1,8 @@
-var debug = false;
+var debug = true;
 
 $(document).ready(function() {
-    $.getScript("svg.js");
 
-    $(document).click(function(event) {
+    $(document).on("click", function(event) {
         //var firstMargin = parseInt($('body>*:first').css('margin-top'));
         var data = {
             pos: {
@@ -25,6 +24,7 @@ $(document).ready(function() {
             console.log("req post " + $.now());
             $.post("heatmap.php", data, function(textStatus) {
                 console.log("req done " + $.now());
+                console.log(data);
                 console.log(textStatus);
             });
         }
@@ -38,16 +38,18 @@ function drawOverlay(d) {
         stop.at(1   , '#04A4EE', 0);
     });
     //var circle = draw.circle(100).move(100, 100).fill(gradient);
-    var circles = [];
+    //var circles = [];
+    var diameter = 50;
     d.forEach(function(element, index) {
-        draw.circle(100).move(element.posx-50, element.posy-50).fill(gradient);
+        draw.circle(diameter).move(element.posx-diameter/2, element.posy-diameter/2).fill(gradient);
         //console.log(element.posx)
     });
 }
 
 function getData() {
+    $('#drawing').show();
     debug&&console.log($.now() + " start fetching data");
-    $.post("heatmap.php", 'getData', function(textStatus) {
+    $.post("heatmap.php", 'getData='+window.location.pathname, function(textStatus) {
         var data = JSON.parse(textStatus);
         debug&&console.log($.now() + " received data, start to draw");
         //console.log(textStatus);
