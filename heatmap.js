@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 
 $(document).ready(function() {
 
@@ -29,9 +29,16 @@ $(document).ready(function() {
             });
         }
     });
+
+    $(document).keydown(function(e) {
+        if (e.ctrlKey && e.altKey && e.keyCode === 80) {
+            showAdminControls();
+        }
+    });
 });
 
 function drawOverlay(d) {
+    $('#drawing').show();
     var draw = SVG('drawing').size(document.body.scrollWidth, document.body.scrollHeight);
     var gradient = draw.gradient('radial', function(stop) {
         stop.at(0   , '#04A4EE', 0.05);
@@ -47,11 +54,11 @@ function drawOverlay(d) {
 }
 
 function getData() {
-    $('#drawing').show();
     debug&&console.log($.now() + " start fetching data");
     $.post("heatmap.php", 'getData='+window.location.pathname, function(textStatus) {
+        //debug&&console.log(textStatus);
         var data = JSON.parse(textStatus);
-        debug&&console.log($.now() + " received data, start to draw");
+        debug&&console.log($.now() + " received data, start to draw\n");
         //console.log(textStatus);
         //data.forEach(function(element, index) {
             //console.log(element);
@@ -61,4 +68,9 @@ function getData() {
         debug&&console.log($.now() + " finished drawing " + data.length + " elements");
     });
     return 1;
+}
+
+function showAdminControls() {
+    getData();
+    controlWindow = window.open('controls.php?loc='+window.location.pathname, "Steuerung", "width=300,height=400,left=100,top=200");
 }

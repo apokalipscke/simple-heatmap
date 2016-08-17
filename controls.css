@@ -1,0 +1,15 @@
+.controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    font-family: sans-serif;
+}
+
+h3 {
+    margin-top: 0;
+}
+
+.pbar {
+    border: 1px solid green;
+}

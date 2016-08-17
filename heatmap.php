@@ -18,7 +18,9 @@
     //print_r($data);
 
     if(isset($data['getData'])) {
-        $result = mysqli_query($db, "SELECT posx, posy FROM clicks WHERE location LIKE '".$data['getData']."'");
+        $location = mysqli_query($db, "SELECT * FROM locations WHERE location LIKE '".$data['getData']."'");
+        $row = mysqli_fetch_array($location);
+        $result = mysqli_query($db, "SELECT posx, posy FROM clicks WHERE location LIKE '".$row['id']."'");
         $buffer = array();
         while ($row = mysqli_fetch_array($result)) {
             unset($row[0]);
@@ -35,19 +37,30 @@
         if(mysqli_num_rows($resolutions) > 0) {
             $row = mysqli_fetch_array($resolutions);
             $screenId = $row['id'];
-            echo $screenId;
+            //echo $screenId;
         } else {
             if($sr = mysqli_query($db, "INSERT INTO screenresolutions (width, height) VALUES ('".$sw."', '".$sh."')")) {
                 $screenId = mysqli_insert_id($db);
-                echo "SID: ".$screenId." ";
+                //echo "SID: ".$screenId." ";
             } else {
                 echo "fehler beim anlegen der screenresolution $sw $sh ";
             }
         }
-        if($result = mysqli_query($db, "INSERT INTO clicks (`id-screenResolution`, `posx`, `posy`, `innerWidth`, `innerHeight`, `location`)
-                                        VALUES ('".$screenId."','".$data['pos']['x']."','".$data['pos']['y']."', '".$data['dim']['innerWidth']."', '".$data['dim']['innerHeight']."','".$data['loc']."')")) {
+        $location = mysqli_query($db, "SELECT * FROM locations WHERE location LIKE '".$data['loc']."'");
+        if(mysqli_num_rows($location) > 0) {
+            $row = mysqli_fetch_array($location);
+            $locationId = $row['id'];
+        } else {
+            if($ln = mysqli_query($db, "INSERT INTO locations (location) VALUES ('".$data['loc']."')")) {
+                $locationId = mysqli_insert_id($db);
+            } else {
+                echo "fehler beim anlegen der location ".$data['loc'];
+            }
+        }
+        if($result = mysqli_query($db, "INSERT INTO clicks (`idScreenResolution`, `posx`, `posy`, `innerWidth`, `innerHeight`, `location`)
+                                        VALUES ('".$screenId."','".$data['pos']['x']."','".$data['pos']['y']."', '".$data['dim']['innerWidth']."', '".$data['dim']['innerHeight']."','".$locationId."')")) {
 
-            echo "daten gespeichert S: ".$screenId.", X: ".$data['pos']['x'].", Y: ".$data['pos']['y'].", W: ".$data['dim']['innerWidth'].", H: ".$data['dim']['innerHeight'].", PATH: ".$data['loc'];
+            echo "daten gespeichert S: ".$screenId.", X: ".$data['pos']['x'].", Y: ".$data['pos']['y'].", W: ".$data['dim']['innerWidth'].", H: ".$data['dim']['innerHeight'].", PATH: ".$locationId.":".$data['loc'];
         } else {
             echo "fehler beim speichern";
         }
