@@ -23,10 +23,6 @@
         $i++;
     }
 
-    /* TODO *******************************************************************/
-    /* - get clicks per resolution                                            */
-    /**************************************************************************/
-
 ?>
 
 <script>
@@ -39,7 +35,7 @@
 <link rel="stylesheet" type="text/css" href="controls.css" media="all">
 <div class="controls">
     <h3>Heatmap Controls</h3>
-    <p><?php echo $data['loc'] ?></p>
+    <p><?= $data['loc'] ?></p>
     <strong>Auflösungen:</strong>
     <ul>
         <?php

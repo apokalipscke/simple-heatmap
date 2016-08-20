@@ -19,6 +19,7 @@ $(document).ready(function() {
             loc: window.location.pathname
         };
 
+        /* TODO *** REMOVE THE DEBUG-BUG **************************************/
         if(debug) {
             $('<div class="punkt"></div>').css('left',data.pos.x).css('top',data.pos.y).appendTo('body');
             console.log("req post " + $.now());
