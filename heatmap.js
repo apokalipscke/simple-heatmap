@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 
 $(document).ready(function() {
 
@@ -19,16 +19,15 @@ $(document).ready(function() {
             loc: window.location.pathname
         };
 
-        /* TODO *** REMOVE THE DEBUG-BUG **************************************/
         if(debug) {
             $('<div class="punkt"></div>').css('left',data.pos.x).css('top',data.pos.y).appendTo('body');
             console.log("req post " + $.now());
-            $.post("heatmap.php", data, function(textStatus) {
-                console.log("req done " + $.now());
-                console.log(data);
-                console.log(textStatus);
-            });
         }
+        $.post("heatmap.php", data, debug&&function(textStatus) {
+            console.log("req done " + $.now());
+            console.log(data);
+            console.log(textStatus);
+        });
     });
 
     $(document).keydown(function(e) {

@@ -1,13 +1,41 @@
 .controls {
-    position: fixed;
-    top: 0;
-    left: 0;
     padding: 10px;
     font-family: sans-serif;
 }
 
-h3 {
+pre {
     margin-top: 0;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    border: 1px solid #a9a9a9;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+    position: relative;
+}
+
+.resolution {
+    margin: 10px 0;
+}
+
+.resolution span {
+    font-weight: bold;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    text-align: right;
+}
+
+.resolution span small {
+    font-weight: normal;
 }
 
 .pbar {
