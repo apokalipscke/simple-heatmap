@@ -1,50 +1,63 @@
 <?php
 
-    if(file_exists('credentials.php'))
-        include "credentials.php";
+if(file_exists('credentials.php')) include "credentials.php";
+require_once 'class.heatmap.php';
 
-    $data = $_GET;
-    //print_r($data);
+$data = $_GET;
 
-    $db = mysqli_connect($host, $user, $pass, $base);
-    if(!$db) {
-        exit("Verbindungsfehler: ".mysqli_connect_error());
-    }
-
-    $result = mysqli_query($db, "SELECT * FROM clicksbyresolution WHERE location LIKE '".$data['loc']."'");
-    $resolutions = array();
-    $i = 0;
-    $sumClicks = 0;
-    while ($row = mysqli_fetch_array($result)) {
-        $resolutions[$i]['w'] = $row['width'];
-        $resolutions[$i]['h'] = $row['height'];
-        $resolutions[$i]['c'] = $row['clicks'];
-        $sumClicks += $row['clicks'];
-        $i++;
-    }
+$hm = new heatmap($config['db']['host'], $config['db']['user'], $config['db']['pass'], $config['db']['base']);
 
 ?>
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="controls.css" media="all">
+        <script type="text/javascript" src="jquery-3.1.0.min.js"></script>
+        <script>
+            window.onunload = refreshParent;
+            function refreshParent() {
+                window.opener.document.getElementById('drawing').style.display = 'none';
+            }
 
-<script>
-    window.onunload = refreshParent;
-    //window.onclick = refreshParent;
-    function refreshParent() {
-        window.opener.document.getElementById('drawing').style.display = 'none';
-    }
-</script>
-<link rel="stylesheet" type="text/css" href="controls.css" media="all">
-<div class="controls">
-    <h3>Heatmap Controls</h3>
-    <p><?= $data['loc'] ?></p>
-    <strong>Auflösungen:</strong>
-    <ul>
-        <?php
-        foreach($resolutions as $value) {
-            echo "<li>";
-            echo "<p>".$value['w'] . ' x ' . $value['h'] . ': ' . $value['c']."</p>";
-            echo "<div class='pbar' style='width:".$value['c']/$sumClicks*(100)."%'></div>";
-            echo "</li>";
-        }
-        ?>
-    </ul>
-</div>
+            /* TODO: Change Location, draw data */
+            function changeLocation(location) {
+                window.opener.location = location;
+            }
+            
+            /* TODO: Change window width of the parent window */
+            function changeWidth(width) {
+                window.opener.document.body.style.width = width + 'px';
+                window.opener.document.svg.style.width = width + 'px';
+            }
+            // window.onclick = function() {
+            //     window.opener.getData();
+            // }
+        </script>
+        <title>Heatmap Control</title>
+    </head>
+    <body>
+        <div class="controls">
+            <pre><?= $data['loc'] ?></pre>
+            <select name="locations" onchange="changeLocation(this.value)">
+                <!-- <option value="1" selected><?= $data['loc'] ?></option> -->
+                <?php foreach($hm->getLocations() as $location) {
+                    if($location['path'] == $data['loc']) { ?>
+                        <option value="<?= $location['path'] ?>" selected><?= $location['path'] ?></option>
+                    <?php } else { ?>
+                        <option value="<?= $location['path'] ?>"><?= $location['path'] ?></option>
+                    <?php } ?>
+                <?php } ?>
+            </select>
+            <ul>
+                <?php foreach($hm->getClicksByResolution($data['loc']) as $value) { ?>
+                <li onclick="changeWidth(<?= $value['w'] ?>)">
+                    <p class="resolution"><?= $value['w'] ?> x <?= $value['h'] ?>:<span><?= $value['c'] ?><br/><small><?= round($value['p']) ?>%</small></p>
+                    <div class="pbar" style="width:<?= $value['p'] ?>%"></div>
+                </li>
+                <?php } ?>
+            </ul>
+        </div>
+    </body>
+</html>
