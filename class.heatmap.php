@@ -91,32 +91,32 @@ class heatmap
     {
         $screenId = $this->_getScreenId($screenHeight, $screenWidth);
         if($screenId >= 0) {
-            // Auflösung gefunden/gespeichert
 
+            // Auflösung gefunden/gespeichert, weiter mit Dateipfad
             $locationId = $this->_getLocationId($location);
             if($locationId >= 0) {
-                // Dateipfad gefunden/gespeichert
 
+                // Dateipfad gefunden/gespeichert, Clickdaten speichern
                 $sql = "INSERT INTO clicks (`idScreenResolution`, `posx`, `posy`, `innerWidth`, `innerHeight`, `location`)
                         VALUES ('".$screenId."','".$posx."','".$posy."', '".$innerWidth."', '".$innerHeight."','".$locationId."')";
 
                 if($result = $this->dbLink->query($sql)) {
-                    // Clickdaten erfolgreich gespeichert
 
+                    // Clickdaten erfolgreich gespeichert
                     echo "Daten gespeichert S: ".$screenId.", X: ".$posx.", Y: ".$posy.", W: ".$innerWidth.", H: ".$innerHeight.", PATH: ".$locationId.":".$location;
                 } else {
-                    // Fehler beim speichern der Clickdaten
 
+                    // Fehler beim speichern der Clickdaten
                     echo "Fehler beim speichern";
                 }
             } else {
-                // Fehler beim laden/anlegen des Pfades
 
+                // Fehler beim laden/anlegen des Pfades
                 echo "Fehler beim laden/anlegen des Pfades";
             }
         } else {
-            // Fehler beim laden/anlegen der Auflösung
 
+            // Fehler beim laden/anlegen der Auflösung
             echo "Fehler beim laden/anlegen der Auflösung";
         }
     }
@@ -209,13 +209,13 @@ class heatmap
 
         $resolutions = $this->dbLink->query($sql);
         if($resolutions->num_rows > 0) {
-            // Auflösung gefunden, id holen
 
+            // Auflösung gefunden, id holen
             $row = $resolutions->fetch_assoc();
             $screenId = $row['id'];
         } else {
-            // Auflösung nicht vorhanden, speichern, id holen, bei Fehler -1
 
+            // Auflösung nicht vorhanden, speichern, id holen, bei Fehler -1
             $sql = "INSERT INTO screenresolutions (width, height)
                     VALUES ('" . $screenWidth . "', '" . $screenHeight . "')";
 
@@ -244,13 +244,13 @@ class heatmap
 
         $l = $this->dbLink->query($sql);
         if($l->num_rows > 0) {
-            // Dateipfad gefunden, id holen
 
+            // Dateipfad gefunden, id holen
             $row = $l->fetch_assoc();
             $locationId = $row['id'];
         } else {
-            // Dateipfad noch nicht vorhanden, speichern, id holen, bei Fehler -1
 
+            // Dateipfad noch nicht vorhanden, speichern, id holen, bei Fehler -1
             $sql = "INSERT INTO locations (location)
                     VALUES ('" . $location . "')";
 

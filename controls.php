@@ -15,26 +15,7 @@ $hm = new heatmap($config['db']['host'], $config['db']['user'], $config['db']['p
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="controls.css" media="all">
         <script type="text/javascript" src="jquery-3.1.0.min.js"></script>
-        <script>
-            window.onunload = refreshParent;
-            function refreshParent() {
-                window.opener.document.getElementById('drawing').style.display = 'none';
-            }
-
-            /* TODO: Change Location, draw data */
-            function changeLocation(location) {
-                window.opener.location = location;
-            }
-            
-            /* TODO: Change window width of the parent window */
-            function changeWidth(width) {
-                window.opener.document.body.style.width = width + 'px';
-                window.opener.document.svg.style.width = width + 'px';
-            }
-            // window.onclick = function() {
-            //     window.opener.getData();
-            // }
-        </script>
+        <script type="text/javascript" src="controls.js"></script>
         <title>Heatmap Control</title>
     </head>
     <body>
