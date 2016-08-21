@@ -3,7 +3,7 @@
     require_once 'class.heatmap.php';
 
     $data = $_POST;
-    $hm = new heatmap($host, $user, $pass, $base);
+    $hm = new heatmap($config['db']['host'], $config['db']['user'], $config['db']['pass'], $config['db']['base']);
 
     if(isset($data['getData'])) {
         echo $hm->getClicks($data['getData']);

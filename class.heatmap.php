@@ -76,36 +76,67 @@ class heatmap
      */
     public function saveClick($screenHeight, $screenWidth, $innerHeight, $innerWidth, $location, $posx, $posy)
     {
-        //global $dbLink;
+        $screenId = $this->_getScreenId($screenHeight, $screenWidth);
+        if($screenId >= 0) {
+            $locationId = $this->_getLocationId($location);
+            if($locationId >= 0) {
+                if($result = mysqli_query($this->dbLink, "INSERT INTO clicks (`idScreenResolution`, `posx`, `posy`, `innerWidth`, `innerHeight`, `location`)
+                                                VALUES ('".$screenId."','".$posx."','".$posy."', '".$innerWidth."', '".$innerHeight."','".$locationId."')")) {
+
+                    echo "Daten gespeichert S: ".$screenId.", X: ".$posx.", Y: ".$posy.", W: ".$innerWidth.", H: ".$innerHeight.", PATH: ".$locationId.":".$location;
+                } else {
+                    echo "Fehler beim speichern";
+                }
+            } else {
+                echo "Fehler beim laden/anlegen des Pfades";
+            }
+        } else {
+            echo "Fehler beim laden/anlegen der Auflösung";
+        }
+    }
+
+    /**
+     * get screenId if present or save the new resolution
+     *
+     * @param $screenHeight height of users screen
+     * @param $screenWidth width of users screen
+     *
+     * @return $screenId or -1 on error
+     */
+    private function _getScreenId($screenHeight, $screenWidth)
+    {
         $resolutions = mysqli_query($this->dbLink, "SELECT * FROM screenresolutions WHERE width='".$screenWidth."' AND height='".$screenHeight."'");
         if(mysqli_num_rows($resolutions) > 0) {
             $row = mysqli_fetch_array($resolutions);
-            $screenId = $row['id'];
+            return $row['id'];
         } else {
             if($sr = mysqli_query($this->dbLink, "INSERT INTO screenresolutions (width, height) VALUES ('".$screenWidth."', '".$screenHeight."')")) {
-                $screenId = mysqli_insert_id($this->dbLink);
-                //echo "SID: ".$screenId." ";
+                return mysqli_insert_id($this->dbLink);
             } else {
-                echo "fehler beim anlegen der screenresolution $sw $sh ";
+                return -1;
             }
         }
+    }
+
+    /**
+     * get locationId if present or save the new location
+     *
+     * @param $location the absolute path of the documents location
+     *
+     * @return $locationId or -1 on error
+     */
+    private function _getLocationId($location)
+    {
         $l = mysqli_query($this->dbLink, "SELECT * FROM locations WHERE location LIKE '".$location."'");
         if(mysqli_num_rows($l) > 0) {
             $row = mysqli_fetch_array($l);
-            $locationId = $row['id'];
+            return $row['id'];
         } else {
             if($ln = mysqli_query($this->dbLink, "INSERT INTO locations (location) VALUES ('".$location."')")) {
-                $locationId = mysqli_insert_id($this->dbLink);
+                return mysqli_insert_id($this->dbLink);
             } else {
-                echo "fehler beim anlegen der location ".$location;
+                return -1;
             }
-        }
-        if($result = mysqli_query($this->dbLink, "INSERT INTO clicks (`idScreenResolution`, `posx`, `posy`, `innerWidth`, `innerHeight`, `location`)
-                                        VALUES ('".$screenId."','".$posx."','".$posy."', '".$innerWidth."', '".$innerHeight."','".$locationId."')")) {
-
-            echo "daten gespeichert S: ".$screenId.", X: ".$posx.", Y: ".$posy.", W: ".$innerWidth.", H: ".$innerHeight.", PATH: ".$locationId.":".$location;
-        } else {
-            echo "fehler beim speichern";
         }
     }
 }
